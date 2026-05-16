@@ -1,13 +1,11 @@
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
-
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-    
-    host: 'smtp-relay.brevo.com',
-    port: 465,        
-    secure: true,     
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -29,13 +27,13 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
             to: userEmail,
             subject: `Booking Confirmed: ${eventTitle}`,
             html: `
-        <h2>Hi ${userName}!</h2>
-        <p>Your booking for the event <strong>${eventTitle}</strong> is successfully confirmed.</p>
-        <p>Thank you for choosing Eventora.</p>
-      `
+                <h2>Hi ${userName}!</h2>
+                <p>Your booking for <strong>${eventTitle}</strong> is confirmed.</p>
+                <p>Thank you for choosing Eventora.</p>
+            `
         };
         await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully to', userEmail);
+        console.log('Email sent to', userEmail);
     } catch (error) {
         console.error('Error sending email:', error.message);
     }
@@ -43,8 +41,8 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
 
 const sendOTPEmail = async (userEmail, otp, type) => {
     try {
-        const title = type === 'account_verification' 
-            ? 'Verify your Eventora Account' 
+        const title = type === 'account_verification'
+            ? 'Verify your Eventora Account'
             : 'Eventora Booking Verification';
         const msg = type === 'account_verification'
             ? 'Please use the following OTP to verify your new Eventora account.'
@@ -66,7 +64,7 @@ const sendOTPEmail = async (userEmail, otp, type) => {
             `
         };
         await transporter.sendMail(mailOptions);
-        console.log(`OTP sent to ${userEmail} for ${type}`);
+        console.log(`OTP sent to ${userEmail}`);
     } catch (error) {
         console.error('Error sending OTP email:', error.message);
         throw error;
